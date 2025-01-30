@@ -41,8 +41,8 @@ BuildingAutomationSimulator
 1.  **Clone the repository:**
 
     ```bash
-    git clone [Your GitHub repository URL]
-    cd [Repository name]
+    git clone https://github.com/Freedomwithin/BuildingAutomationSimulator
+    cd BuildingAutomationSimulator
     ```
 
 2.  **Create and Activate a Virtual Environment:**
@@ -82,21 +82,21 @@ BuildingAutomationSimulator
     **Linux/macOS:**
 
     ```bash
-    cd [Project directory]
+    cd BuildingAutomationSimulator
     source .venv/bin/activate
     ```
 
     **Windows (Command Prompt):**
 
     ```bash
-    cd [Project directory]
+    cd BuildingAutomationSimulator
     .venv\Scripts\activate
     ```
 
     **Windows (PowerShell):**
 
     ```bash
-    cd [Project directory]
+    cd BuildingAutomationSimulator
     .venv\Scripts\Activate.ps1
     ```
 
@@ -123,6 +123,7 @@ BuildingAutomationSimulator
     ```
 
     You should now see the Building Energy Management Dashboard.
+    If you make changes you may need to clear cache in browser or load in an incognito window.
 
 ## Future Enhancements:
 
@@ -134,7 +135,7 @@ BuildingAutomationSimulator
 
 ## Author
 
-[Your Name]
+Freedomwithin/Jonathon K.
 
 ## Acknowledgments
 
