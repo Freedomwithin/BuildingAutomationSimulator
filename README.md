@@ -21,7 +21,7 @@ This project is a simplified simulation of a Building Energy Management System (
 *   **Chart.js:** A JavaScript library for creating interactive charts.
 
 ## Project Structure:
-.
+BuildingAutomationSimulator 
 ├── README.md
 ├── app.py
 ├── building_data.db
