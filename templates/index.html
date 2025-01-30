@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Building Energy Dashboard</title>
+    <style>
+        /* Basic CSS for layout */
+        body { font-family: sans-serif; }
+        .container { display: flex; flex-wrap: wrap; }
+        .card { border: 1px solid #ccc; padding: 10px; margin: 10px; width: 200px; }
+        .chart-container { width: 600px; height: 350px; margin: 20px; } /* Adjusted size */
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Building Energy Dashboard</h1>
+
+    <div class="container" id="data-container">
+        </div>
+
+    <div class="container" id="energy-container">
+        </div>
+
+    <div>
+        <button onclick="fetchData('day')">Day</button>
+        <button onclick="fetchData('week')">Week</button>
+        <button onclick="fetchData('month')">Month</button>
+    </div>
+
+    <div class="chart-container">
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('myChart').getContext('2d');
+        let myChart = new Chart(ctx, {
+            type: 'line', // Or 'bar', etc.
+            data: {
+                labels: [], // Will be filled with timestamps
+                datasets: [{
+                    label: 'Office Temperature',
+                    data: [], // Will be filled with temperature data
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        function updateChart(data) {
+            myChart.data.labels = data.timestamps;
+            myChart.data.datasets[0].data = data.temperatures;
+            myChart.update();
+        }
+
+        function fetchData(period = 'day') {
+            fetch(`/data?period=${period}`)
+                .then(response => response.json())
+                .then(data => {
+                    const dataContainer = document.getElementById('data-container');
+                    dataContainer.innerHTML = ''; // Clear previous data
+
+                    const energyContainer = document.getElementById('energy-container');
+                    energyContainer.innerHTML = ''; // Clear previous data
+
+                    // Display temperature data
+                    data.temperatures_display.forEach(temp => {
+                        const card = document.createElement('div');
+                        card.classList.add('card');
+                        card.innerHTML = `
+                            <h2>${temp.location}</h2>
+                            <p>Temperature: ${temp.value}°C</p>
+                            <p><small>Last Updated: ${temp.timestamp}</small></p>
+                        `;
+                        dataContainer.appendChild(card);
+                    });
+
+                    // Display humidity data
+                    data.humidity.forEach(humi => {
+                        const card = document.createElement('div');
+                        card.classList.add('card');
+                        card.innerHTML = `
+                            <h2>${humi.location}</h2>
+                            <p>Humidity: ${humi.value}%</p>
+                            <p><small>Last Updated: ${humi.timestamp}</small></p>
+                        `;
+                        dataContainer.appendChild(card);
+                    });
+
+                    // Display energy consumption data
+                    data.energy_consumption.forEach(energy => {
+                        const card = document.createElement('div');
+                        card.classList.add('card');
+                        card.innerHTML = `
+                            <h2>${energy.location}</h2>
+                            <p>Total Consumption: ${energy.total_consumption.toFixed(2)} kWh</p>
+                        `;
+                        energyContainer.appendChild(card);
+                    });
+
+                    // Display degree days and EUI (add elements to your HTML for these)
+                    const degreeDaysCard = document.createElement('div');
+                    degreeDaysCard.classList.add('card');
+                    degreeDaysCard.innerHTML = `
+                        <h2>Degree Days</h2>
+                        <p>${data.degree_days.toFixed(2)}</p>
+                    `;
+                    dataContainer.appendChild(degreeDaysCard);
+
+                    const euiCard = document.createElement('div');
+                    euiCard.classList.add('card');
+                    euiCard.innerHTML = `
+                        <h2>EUI (kWh/sq ft)</h2>
+                        <p>${data.eui.toFixed(2)}</p>
+                    `;
+                    dataContainer.appendChild(euiCard);
+
+                    updateChart(data);
+                });
+        }
+
+        fetchData(); // Initial fetch
+        setInterval(() => fetchData('day'), 30000); // Update every 30 seconds (adjust as needed)
+    </script>
+</body>
+</html>
